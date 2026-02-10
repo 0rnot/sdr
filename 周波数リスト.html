@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>受信周波数リスト</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        th, td {
+            white-space: nowrap;
+        }
+        th {
+            cursor: pointer;
+            position: relative;
+        }
+        th::after {
+            content: '↕';
+            position: absolute;
+            right: 0.5rem;
+            opacity: 0.3;
+        }
+        th.sort-asc::after { content: '↑'; opacity: 1; }
+        th.sort-desc::after { content: '↓'; opacity: 1; }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">受信周波数リスト</h1>
+            <p class="text-gray-500">UV-K5およびSDR用の受信周波数一覧です。</p>
+        </header>
+
+        <!-- UV-K5 Section -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-blue-500 pb-2 mb-4">【UV-K5用：VHF/UHF帯】</h2>
+
+            <!-- Registered Frequencies -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-600 mb-3">■ ファイル登録済みの周波数 (a.pdfより抽出)</h3>
+                <p class="text-sm text-gray-500 mb-4">※UV-K5で受信可能なアナログ音声、または特徴的な信号音が聞こえる可能性のある周波数です。</p>
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200" id="table-registered">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ch</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名前</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">周波数 (MHz)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">モード</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ステップ(kHz)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">帯域幅</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">備考</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <!-- Data will be populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Unregistered Frequencies -->
+            <div>
+                <h3 class="text-xl font-semibold text-gray-600 mb-3">■ ファイル未登録周波数</h3>
+                 <p class="text-sm text-gray-500 mb-4">※デジタル化された消防無線などを除いた、UV-K5で受信可能なアナログ周波数です。</p>
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200" id="table-unregistered">
+                        <thead class="bg-gray-50">
+                             <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">カテゴリ</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">周波数 (MHz)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">モード</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ステップ(kHz)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">帯域幅</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">備考</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <!-- Data will be populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SDR Section -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-green-500 pb-2 mb-4">【SDR + 短波アンテナ用：短波(HF)帯】</h2>
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-600 mb-3">■ ミステリー局・乱数放送</h3>
+                <p class="text-sm text-gray-500 mb-4">※受信にはMLA-30+などの短波用アンテナが必須です。周波数は常に変動します。</p>
+                <div class="table-container">
+                     <table class="min-w-full divide-y divide-gray-200" id="table-sdr">
+                        <thead class="bg-gray-50">
+                           <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">通称</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">周波数 (kHz)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">モード</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">発信国(推定)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">備考</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                           <!-- Data will be populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Important Notes -->
+        <footer class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+            <h3 class="text-lg font-semibold text-yellow-800">【重要】</h3>
+            <ul class="list-disc list-inside text-yellow-700 mt-2 space-y-1">
+                <li><strong>アンテナ:</strong> 記載の周波数を良好に受信するには、それぞれの周波数帯に合ったアンテナ（VHF/UHF用、短波用）の使用を強く推奨します。</li>
+                <li><strong>法律:</strong> 受信した通信の内容を第三者に漏らしたり、悪用したりすることは電波法で固く禁じられています。個人の趣味の範囲でお楽しみください。</li>
+            </ul>
+        </footer>
+
+    </div>
+
+    <script>
+        const registeredData = [
+            { ch: 1, name: 'TTTACH091', freq: '422.200000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 2, name: 'TTTACH092', freq: '422.212500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 3, name: 'TTTACH093', freq: '422.225000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 4, name: 'TTTACH094', freq: '422.237500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 5, name: 'TTTACH095', freq: '422.250000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 6, name: 'TTTACH096', freq: '422.262500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 7, name: 'TTTACH097', freq: '422.275000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 8, name: 'TTTACH098', freq: '422.287500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 9, name: 'TTTACH099', freq: '422.300000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 10, name: 'TTTACH111', freq: '422.055000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 11, name: 'TTTACH112', freq: '422.062500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 12, name: 'TTTACH113', freq: '422.075000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 13, name: 'TTTACH114', freq: '422.087500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 14, name: 'TTTACH115', freq: '422.100000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 15, name: 'TTTACH116', freq: '422.112500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 16, name: 'TTTACH117', freq: '422.125000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 17, name: 'TTTACH118', freq: '422.137500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 18, name: 'TTTACH119', freq: '422.150000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 19, name: 'TTTACH1110', freq: '422.162500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 20, name: 'TTTACH1111', freq: '422.175000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (単信)' },
+            { ch: 21, name: 'TTTT6-1', freq: '398.605000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 22, name: 'TTTT6-2', freq: '399.455000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 23, name: 'TTTT6-3', freq: '399.030000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 24, name: 'TTTT6-4', freq: '139.970000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 25, name: 'TTTT6-5', freq: '140.000000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 26, name: 'TTTT6-6', freq: '139.940000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 27, name: 'TT-UHF-1', freq: '311.155000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 28, name: 'TT-UHF-2', freq: '339.250000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 29, name: 'TT-UHF-3', freq: '344.700000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 30, name: 'TT-UHF-4', freq: '350.125000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 31, name: 'TT-UHF-5', freq: '361.825000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 32, name: 'TT-UHF-6', freq: '365.050000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 33, name: 'TT-UHF-7', freq: '367.400000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 34, name: 'TT-UHF-8', freq: '380.425000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'MCA無線 (アナログ音声またはデータ音)' },
+            { ch: 35, name: 'TT-UHF-9', freq: '381.330000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'MCA無線 (アナログ音声またはデータ音)' },
+            { ch: 36, name: 'TT-UHF-10', freq: '389.605000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 37, name: 'TT-UHF-11', freq: '390.640000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 38, name: 'TT-UHF-12', freq: '393.620000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 39, name: 'TT-UHF-13', freq: '395.750000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 40, name: 'TT-UHF-14', freq: '396.605000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 41, name: 'TT-UHF-15', freq: '397.250000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 42, name: 'TT-UHF-16', freq: '398.645000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 43, name: 'TT-UHF-17', freq: '399.605000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 44, name: 'TT-UHF-18', freq: '400.000000', mode: 'FM', step: '12.5', bw: 'WIDE', remark: '警察無線制御信号 (連続ノイズ)' },
+            { ch: 45, name: 'TT-UHF-19', freq: '402.685000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 46, name: 'TT-UHF-20', freq: '404.215000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 47, name: 'TT-UHF-21', freq: '405.355000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 48, name: 'TT-UHF-22', freq: '406.520000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 49, name: 'TT-UHF-23', freq: '407.210000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 50, name: 'TT-UHF-24', freq: '410.970000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 51, name: 'TT-UHF-25', freq: '411.835000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 52, name: 'TT-UHF-26', freq: '412.795000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 53, name: 'TT-UHF-27', freq: '413.040000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 54, name: 'TT-UHF-28', freq: '418.563000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 55, name: 'TT-UHF-29', freq: '428.635000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 56, name: 'TT-UHF-30', freq: '430.100000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 57, name: 'TT-UHF-31', freq: '433.000000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 58, name: 'TT-UHF-32', freq: '442.900000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 59, name: 'TT-UHF-33', freq: '443.650000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 60, name: 'TT-UHF-34', freq: '444.885000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 61, name: 'TT-UHF-35', freq: '445.665000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 62, name: 'TT-UHF-36', freq: '467.750000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 63, name: 'TT-UHF-37', freq: '498.605000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 64, name: 'TT-UHF2-1', freq: '26.998000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '市民ラジオ帯' },
+            { ch: 65, name: 'TT-UHF2-2', freq: '27.145000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '市民ラジオ帯' },
+            { ch: 66, name: 'TT-UHF2-3', freq: '30.920000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 67, name: 'TT-UHF2-4', freq: '32.000000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 68, name: 'TT-UHF2-5', freq: '34.450000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 69, name: 'TT-UHF2-6', freq: '36.665000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 70, name: 'TT-UHF2-7', freq: '40.480000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 71, name: 'TT-UHF2-8', freq: '49.830000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 72, name: 'TT-UHF2-9', freq: '61.610000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 73, name: 'TT-UHF2-10', freq: '75.600000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 74, name: 'TT-UHF2-20', freq: '109.880000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 75, name: 'TT-UHF2-21', freq: '110.150000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 76, name: 'TT-UHF2-22', freq: '124.085000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 77, name: 'TT-UHF2-23', freq: '124.090000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 78, name: 'TT-UHF2-24', freq: '134.000000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 79, name: 'TT-UHF2-25', freq: '135.365000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 80, name: 'TT-UHF2-26', freq: '136.600000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 81, name: 'TT-UHF2-27', freq: '137.660000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 82, name: 'TT-UHF2-28', freq: '139.450000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 83, name: 'TT-UHF2-29', freq: '140.050000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 84, name: 'TT-UHF2-30', freq: '141.480000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 85, name: 'TT-UHF2-31', freq: '142.900000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 86, name: 'TT-UHF2-32', freq: '143.070000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 87, name: 'TT-UHF2-33', freq: '143.780000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 88, name: 'TT-UHF2-34', freq: '144.000000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 89, name: 'TT-UHF2-35', freq: '146.550000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 90, name: 'TT-UHF2-36', freq: '149.895000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 91, name: 'TT-UHF2-37', freq: '150.500000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 92, name: 'TT-UHF2-38', freq: '152.290000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 93, name: 'TT-UHF2-39', freq: '153.330000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 94, name: 'TT-UHF2-40', freq: '154.585000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 95, name: 'TT-UHF2-41', freq: '167.710000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 96, name: 'TT-UHF2-42', freq: '182.820000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 97, name: 'TT-UHF2-43', freq: '222.365000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 98, name: 'TT-UHF2-44', freq: '298.980000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '業務無線' },
+            { ch: 99, name: 'TTTKCH181', freq: '440.025000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 100, name: 'TTTKCH182', freq: '440.037500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 101, name: 'TTTKCH183', freq: '440.050000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 102, name: 'TTTKCH184', freq: '440.062500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 103, name: 'TTTKCH185', freq: '440.075000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 104, name: 'TTTKCH186', freq: '440.087500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 105, name: 'TTTKCH187', freq: '440.100000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 106, name: 'TTTKCH188', freq: '440.112500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 107, name: 'TTTKCH189', freq: '440.125000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 108, name: 'TTTKCH1810', freq: '440.137500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 109, name: 'TTTKCH1811', freq: '440.150000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 110, name: 'TTTKCH1812', freq: '440.162500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 111, name: 'TTTKCH1813', freq: '440.175000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 112, name: 'TTTKCH1814', freq: '440.187500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 113, name: 'TTTKCH1815', freq: '440.200000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 114, name: 'TTTKCH1816', freq: '440.212500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 115, name: 'TTTKCH1817', freq: '440.225000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 116, name: 'TTTKCH1818', freq: '440.237500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 117, name: 'TTTKCH9-1', freq: '440.262500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 118, name: 'TTTKCH9-2', freq: '440.275000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 119, name: 'TTTKCH9-3', freq: '440.287500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 120, name: 'TTTKCH9-4', freq: '440.300000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 121, name: 'TTTKCH9-5', freq: '440.312500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 122, name: 'TTTKCH9-6', freq: '440.325000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 123, name: 'TTTKCH9-7', freq: '440.337500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 124, name: 'TTTKCH9-8', freq: '440.350000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 125, name: 'TTTKCH9-9', freq: '440.362500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '特小トランシーバー (中継)' },
+            { ch: 126, name: 'JR-STM-1', freq: '158.070000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 127, name: 'JR-STM-2', freq: '322.025000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 128, name: 'JR-STM-3', freq: '322.075000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 129, name: 'JR-STM-4', freq: '322.100000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 130, name: 'JR-STM-5', freq: '322.150000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 131, name: 'JR-STM-6', freq: '322.175000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 132, name: 'JR-STM-7', freq: '322.375000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 133, name: 'JR-STM-8', freq: '322.375000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 134, name: 'JR-STM-9', freq: '365.175000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 135, name: 'JR-STM-10', freq: '365.175000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 136, name: 'JR-STM-11', freq: '365.212500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 137, name: 'JR-STM-12', freq: '365.250000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 138, name: 'JR-STM-13', freq: '422.050000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 139, name: 'JR-STM-14', freq: '422.162500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 140, name: 'JR-STM-15', freq: '422.175000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 141, name: 'JR-STM-16', freq: '467.025000', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 142, name: 'JR-STM-17', freq: '467.043750', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 143, name: 'JR-STM-18', freq: '467.087500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 144, name: 'JR-STM-19', freq: '467.187500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+            { ch: 145, name: 'JR-STM-20', freq: '467.212500', mode: 'FM', step: '12.5', bw: 'NARROW', remark: 'JR関連 業務無線' },
+        ];
+
+        const unregisteredData = [
+            { cat: '防災行政無線', freq: '68.805', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '定時放送・緊急放送' },
+            { cat: '防災ヘリ', freq: '130.350', mode: 'AM', step: '25.0', bw: 'WIDE', remark: '防災ヘリコプター' },
+            { cat: '航空無線', freq: '118.000～137.000', mode: 'AM', step: '25.0', bw: 'WIDE', remark: '東京コントロール、横田、羽田など' },
+            { cat: '鉄道無線', freq: '415.025', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '<b>JR高崎線（指令員側）</b>' },
+            { cat: '鉄道無線', freq: '414.825', mode: 'FM', step: '12.5', bw: 'NARROW', remark: '<b>JR高崎線（運転士側）</b>' },
+            { cat: 'アマチュア無線', freq: '145.000', mode: 'FM', step: '5.0', bw: 'WIDE', remark: '呼び出し周波数 (VHF/2m)' },
+            { cat: 'アマチュア無線', freq: '433.000', mode: 'FM', step: '5.0', bw: 'WIDE', remark: '呼び出し周波数 (UHF/70cm)' },
+        ];
+
+        const sdrData = [
+            { name: 'UVB-76', freq: '4625', mode: 'AM/USB', country: 'ロシア', remark: 'ザ・ブザー。24時間ブザー音' },
+            { name: 'V24', freq: '3204, 3250, 3320, 4450, 6400', mode: 'AM', country: '北朝鮮', remark: '夜間。音楽で始まる女性の声' },
+            { name: 'V15', freq: '3550, 4950, 5800, 6315, 8995', mode: 'USB', country: '韓国', remark: '5桁の数字グループ' },
+            { name: 'V26', freq: '7241, 8003, 9357, 12845', mode: 'USB', country: '中国', remark: '中国語の乱数放送' },
+            { name: 'E06 "English Man"', freq: '5473, 6425, 7825, 9150, 10595, 13475', mode: 'USB', country: 'ロシア', remark: '英語の男性の声' },
+            { name: 'G06 "German Man"', freq: '3815, 5210, 6693', mode: 'USB', country: 'ロシア', remark: 'ドイツ語の男性の声' },
+            { name: 'S06s "Russian Man"', freq: '5448, 7845, 9130, 10450, 13538', mode: 'USB', country: 'ロシア', remark: 'ロシア語なまりの男性の声' },
+            { name: 'E11 "Oblique"', freq: '3209, 4016, 5244, 6386, 8077', mode: 'USB', country: 'ポーランド', remark: '特徴的なデータ音に続く数字' },
+            { name: 'XPA2', freq: '6825, 8438, 10865', mode: 'Morse', country: '不明', remark: 'ヨーロッパ。モールス信号の乱数放送' },
+            { name: 'The Lincolnshire Poacher', freq: '4001, 6485, 8464, 12603, 13375, 16415', mode: 'USB', country: 'イギリス(過去)', remark: '英国MI6の放送(現在は停波しているが有名)' },
+            { name: 'Swedish Rhapsody', freq: '4016, 5130, 5323, 6430, 8077, 10398', mode: 'USB', country: 'ポーランド(過去)', remark: 'E11の前身とされる有名な放送(停波)' },
+        ];
+
+        function populateTable(tableId, data, headers) {
+            const tableBody = document.querySelector(`#${tableId} tbody`);
+            tableBody.innerHTML = '';
+            data.forEach(rowData => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-100';
+                headers.forEach(header => {
+                    const cell = document.createElement('td');
+                    cell.className = 'px-4 py-3 text-sm text-gray-700';
+                    cell.innerHTML = rowData[header];
+                    row.appendChild(cell);
+                });
+                tableBody.appendChild(row);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTable('table-registered', registeredData, ['ch', 'name', 'freq', 'mode', 'step', 'bw', 'remark']);
+            populateTable('table-unregistered', unregisteredData, ['cat', 'freq', 'mode', 'step', 'bw', 'remark']);
+            populateTable('table-sdr', sdrData, ['name', 'freq', 'mode', 'country', 'remark']);
+        });
+
+    </script>
+</body>
+</html>
